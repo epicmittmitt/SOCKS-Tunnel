@@ -13,5 +13,9 @@ namespace SOCKS_Tunnel {
         public Form1() {
             InitializeComponent();
         }
+
+        private void textBox5_TextChanged(object sender, EventArgs e) {
+
+        }
     }
 }
