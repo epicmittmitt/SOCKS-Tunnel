@@ -38,6 +38,7 @@ namespace SOCKS_Tunnel {
                 p.StartInfo.UseShellExecute = false;
                 p.OutputDataReceived += (s, _e) => AddLogMessage(_e.Data);
                 p.ErrorDataReceived += (s, _e) => AddLogMessage(_e.Data);
+                FormClosing += delegate { AddLogMessage(Environment.NewLine + "Terminating connection. Please wait ..."); p.Close(); };
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
@@ -57,6 +58,8 @@ namespace SOCKS_Tunnel {
             if (File.Exists(PlinkPath)) {
                 if (tries++ > 3) {
                     AddLogMessage("Attempts to update the binary failed. Will use preloaded binary.");
+                    wc.Dispose();
+                    Thread.Sleep(500);
                     ExtractResourceBinary();
                     button1.Invoke((MethodInvoker)delegate { button1.Enabled = true; });
                     return;
@@ -78,13 +81,27 @@ namespace SOCKS_Tunnel {
                 }
                 AddLogMessage("Update available. Downloading ...");
             } else { AddLogMessage("Binary not present. Downloading ..."); }
-            wc.DownloadFile(@"https://the.earth.li/~sgtatham/putty/latest/x86/plink.exe", PlinkPath);
+            try {
+                wc.DownloadFile(@"https://the.earth.li/~sgtatham/putty/latest/x86/plink.exe", PlinkPath);
+            } catch (Exception ex) {
+                AddLogMessage(ex.Message);
+            }
             CheckForPlinkUpdates();
         }
 
         public void ExtractResourceBinary() {
             AddLogMessage("Transferring preloaded binary from memory ...");
-            File.WriteAllBytes(PlinkPath, Properties.Resources.Plink);
+            FileStream _stream = null;
+            try {
+                _stream = (new FileInfo(PlinkPath)).Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            } catch (IOException) {
+                AddLogMessage("File is in use. Ignoring.");
+                return;
+            } finally {
+                if (_stream != null)
+                    _stream.Close();
+                File.WriteAllBytes(PlinkPath, Properties.Resources.Plink);
+            }
             AddLogMessage("Generating MD5 checksum of existing binary ...");
             string LocalMD5 = string.Empty;
             using (var cs = MD5.Create())
