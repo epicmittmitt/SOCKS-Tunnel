@@ -56,21 +56,20 @@ namespace SOCKS_Tunnel {
             WebClient wc = new WebClient();
             if (File.Exists(PlinkPath)) {
                 if (tries++ > 3) {
-                    AddLogMessage("Attempts to update the binary failed. Will use existing binary." + Environment.NewLine);
+                    AddLogMessage("Attempts to update the binary failed. Will use preloaded binary.");
+                    ExtractResourceBinary();
                     button1.Invoke((MethodInvoker)delegate { button1.Enabled = true; });
                     return;
                 }
                 AddLogMessage("Existing binary found.");
                 string LocalMD5 = string.Empty;
                 AddLogMessage("Generating MD5 checksum of existing binary ...");
-                using (var cs = MD5.Create()) {
-                    using (var stream = File.OpenRead(PlinkPath)) {
-                        LocalMD5 = BitConverter.ToString(cs.ComputeHash(stream)).Replace("-", "‌​").ToLower().ToString().Trim();
-                        AddLogMessage("   " + LocalMD5);
-                    }
-                }
+                using (var cs = MD5.Create())
+                using (var stream = File.OpenRead(PlinkPath))
+                    LocalMD5 = BitConverter.ToString(cs.ComputeHash(stream)).Replace("-", "‌​").ToLower().Trim();
+                AddLogMessage("   " + LocalMD5);
                 AddLogMessage("Fetching MD5 checksum of online binary ...");
-                string RemoteMD5 = Regex.Match(wc.DownloadString(@"https://the.earth.li/~sgtatham/putty/0.67/md5sums"), @"(.*?)[ ]*x86\/plink\.exe").Groups[1].Value.ToString().Trim();
+                string RemoteMD5 = Regex.Match(wc.DownloadString(@"https://the.earth.li/~sgtatham/putty/0.67/md5sums"), @"(.*?)[ ]*x86\/plink\.exe").Groups[1].Value.Trim();
                 AddLogMessage("   " + RemoteMD5);
                 if (LocalMD5 == RemoteMD5) {
                     AddLogMessage("No updates found." + Environment.NewLine);
@@ -81,6 +80,21 @@ namespace SOCKS_Tunnel {
             } else { AddLogMessage("Binary not present. Downloading ..."); }
             wc.DownloadFile(@"https://the.earth.li/~sgtatham/putty/latest/x86/plink.exe", PlinkPath);
             CheckForPlinkUpdates();
+        }
+
+        public void ExtractResourceBinary() {
+            AddLogMessage("Transferring preloaded binary from memory ...");
+            File.WriteAllBytes(PlinkPath, Properties.Resources.Plink);
+            AddLogMessage("Generating MD5 checksum of existing binary ...");
+            string LocalMD5 = string.Empty;
+            using (var cs = MD5.Create())
+            using (var stream = File.OpenRead(PlinkPath))
+                LocalMD5 = BitConverter.ToString(cs.ComputeHash(stream)).Replace("-", "‌​").ToLower().Trim();
+            AddLogMessage("   " + LocalMD5);
+            AddLogMessage("Fetching MD5 checksum from memory ...");
+            string RemoteMD5 = Properties.Resources.ResourcePlinkMD5;
+            AddLogMessage("   " + RemoteMD5);
+            AddLogMessage("Checksum " + (LocalMD5 == RemoteMD5 ? "verified." : "mismatch. Ignoring.") + Environment.NewLine);
         }
     }
 }
