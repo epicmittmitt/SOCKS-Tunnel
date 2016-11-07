@@ -21,14 +21,12 @@ namespace SOCKS_Tunnel {
         public Form1() {
             InitializeComponent();
 
-            Thread t = new Thread(CheckForPlinkUpdates);
-            Shown += delegate { };
+            Shown += delegate { (new Thread(CheckForPlinkUpdates)).Start(); };
         }
 
         public void AddLogMessage(string message) {
             textBox1.Invoke((MethodInvoker)delegate {
-                textBox1.AppendText(message);
-                textBox1.ScrollToCaret();
+                textBox1.AppendText(message + Environment.NewLine);
             });
         }
 
@@ -37,7 +35,7 @@ namespace SOCKS_Tunnel {
             WebClient wc = new WebClient();
             if (File.Exists(PlinkPath)) {
                 if (tries++ > 3) {
-                    AddLogMessage("Attempted updates to the binary failed. Will use existing binary.");
+                    AddLogMessage("Attempts to update the binary failed. Will use existing binary.");
                     return;
                 }
                 AddLogMessage("Existing binary found.");
@@ -45,14 +43,14 @@ namespace SOCKS_Tunnel {
                 AddLogMessage("Generating MD5 checksum of existing binary ...");
                 using (var cs = MD5.Create()) {
                     using (var stream = File.OpenRead(PlinkPath)) {
-                        LocalMD5 = BitConverter.ToString(cs.ComputeHash(stream)).Replace("-", "‌​").ToLower();
+                        LocalMD5 = BitConverter.ToString(cs.ComputeHash(stream)).Replace("-", "‌​").ToLower().ToString().Trim();
                         AddLogMessage("   " + LocalMD5);
                     }
                 }
                 AddLogMessage("Fetching MD5 checksum of online binary ...");
-                string RemoteMD5 = Regex.Match((new WebClient()).DownloadString(@"https://the.earth.li/~sgtatham/putty/0.67/md5sums"), @"(.*?)[ ]*x86\/plink\.exe").Groups[1].Value;
+                string RemoteMD5 = Regex.Match(wc.DownloadString(@"https://the.earth.li/~sgtatham/putty/0.67/md5sums"), @"(.*?)[ ]*x86\/plink\.exe").Groups[1].Value.ToString().Trim();
                 AddLogMessage("   " + RemoteMD5);
-                if (RemoteMD5 == LocalMD5) {
+                if (LocalMD5 == RemoteMD5) {
                     AddLogMessage("No updates found." + Environment.NewLine);
                     return;
                 }
