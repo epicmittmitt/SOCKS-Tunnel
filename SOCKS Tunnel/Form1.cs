@@ -17,6 +17,16 @@ namespace SOCKS_Tunnel {
 
             Shown += delegate { (new Thread(CheckForPlinkUpdates)).Start(); };
             button1.Click += Button1_Click;
+            button2.Click += delegate {
+                button2.Enabled = false;
+                try {
+                    textBox2.Text = Dns.GetHostAddresses(textBox2.Text)[0].ToString();
+                } catch {
+                    System.Media.SystemSounds.Beep.Play();
+                }
+                button2.Enabled = true;
+                textBox2.Focus();
+            };
         }
 
         private void Button1_Click(object sender, EventArgs e) {
@@ -94,7 +104,7 @@ namespace SOCKS_Tunnel {
             FileStream _stream = null;
             try {
                 _stream = (new FileInfo(PlinkPath)).Open(FileMode.Open, FileAccess.Read, FileShare.None);
-            } catch (IOException) {
+            } catch {
                 AddLogMessage("File is in use. Ignoring.");
                 return;
             } finally {
