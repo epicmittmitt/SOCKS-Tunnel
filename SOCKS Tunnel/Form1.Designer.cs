@@ -49,7 +49,7 @@
             this.label1.Location = new System.Drawing.Point(6, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(121, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 0;
             this.label1.Text = "IP Address or Hostname";
             // 
             // textBox2
@@ -57,7 +57,7 @@
             this.textBox2.Location = new System.Drawing.Point(9, 32);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(150, 20);
-            this.textBox2.TabIndex = 2;
+            this.textBox2.TabIndex = 1;
             // 
             // label2
             // 
@@ -65,7 +65,7 @@
             this.label2.Location = new System.Drawing.Point(6, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Remote Port";
             // 
             // label3
@@ -74,7 +74,7 @@
             this.label3.Location = new System.Drawing.Point(6, 94);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 13);
-            this.label3.TabIndex = 1;
+            this.label3.TabIndex = 6;
             this.label3.Text = "Username";
             // 
             // textBox4
@@ -82,7 +82,7 @@
             this.textBox4.Location = new System.Drawing.Point(9, 110);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 2;
+            this.textBox4.TabIndex = 7;
             // 
             // label4
             // 
@@ -90,7 +90,7 @@
             this.label4.Location = new System.Drawing.Point(112, 94);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 13);
-            this.label4.TabIndex = 1;
+            this.label4.TabIndex = 8;
             this.label4.Text = "Password";
             // 
             // textBox5
@@ -98,7 +98,7 @@
             this.textBox5.Location = new System.Drawing.Point(115, 110);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 2;
+            this.textBox5.TabIndex = 9;
             this.textBox5.UseSystemPasswordChar = true;
             // 
             // numericUpDown1
@@ -119,7 +119,7 @@
             this.label5.Location = new System.Drawing.Point(112, 55);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 1;
+            this.label5.TabIndex = 4;
             this.label5.Text = "Local Port";
             // 
             // numericUpDown2
@@ -132,7 +132,7 @@
             0});
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(100, 20);
-            this.numericUpDown2.TabIndex = 3;
+            this.numericUpDown2.TabIndex = 5;
             // 
             // button1
             // 
@@ -140,7 +140,7 @@
             this.button1.Location = new System.Drawing.Point(12, 157);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(221, 30);
-            this.button1.TabIndex = 4;
+            this.button1.TabIndex = 1;
             this.button1.Text = "Connect";
             this.button1.UseVisualStyleBackColor = true;
             // 
@@ -153,7 +153,7 @@
             this.groupBox1.Location = new System.Drawing.Point(239, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(233, 174);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Log";
             // 
@@ -165,7 +165,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(227, 155);
-            this.textBox1.TabIndex = 1;
+            this.textBox1.TabIndex = 0;
             this.textBox1.WordWrap = false;
             // 
             // groupBox2
@@ -183,7 +183,7 @@
             this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(221, 139);
-            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
             // 

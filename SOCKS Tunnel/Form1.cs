@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SOCKS_Tunnel {
@@ -22,6 +16,33 @@ namespace SOCKS_Tunnel {
             InitializeComponent();
 
             Shown += delegate { (new Thread(CheckForPlinkUpdates)).Start(); };
+            button1.Click += Button1_Click;
+        }
+
+        private void Button1_Click(object sender, EventArgs e) {
+            new Thread(() => {
+                string arguments = "-ssh -v -N "
+                    + "-l " + textBox4.Text
+                    + " -pw " + textBox5.Text
+                    + " -P " + numericUpDown1.Value.ToString()
+                    + " -D " + numericUpDown2.Value.ToString()
+                    + " " + textBox2.Text;
+                Process p = new Process();
+                p.EnableRaisingEvents = true;
+                p.StartInfo.Arguments = arguments;
+                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                p.StartInfo.FileName = PlinkPath;
+                p.StartInfo.UseShellExecute = false;
+                p.OutputDataReceived += (s, _e) => AddLogMessage(_e.Data);
+                p.ErrorDataReceived += (s, _e) => AddLogMessage(_e.Data);
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                p.WaitForExit();
+            }).Start();
         }
 
         public void AddLogMessage(string message) {
@@ -35,7 +56,8 @@ namespace SOCKS_Tunnel {
             WebClient wc = new WebClient();
             if (File.Exists(PlinkPath)) {
                 if (tries++ > 3) {
-                    AddLogMessage("Attempts to update the binary failed. Will use existing binary.");
+                    AddLogMessage("Attempts to update the binary failed. Will use existing binary." + Environment.NewLine);
+                    button1.Invoke((MethodInvoker)delegate { button1.Enabled = true; });
                     return;
                 }
                 AddLogMessage("Existing binary found.");
@@ -52,6 +74,7 @@ namespace SOCKS_Tunnel {
                 AddLogMessage("   " + RemoteMD5);
                 if (LocalMD5 == RemoteMD5) {
                     AddLogMessage("No updates found." + Environment.NewLine);
+                    button1.Invoke((MethodInvoker)delegate { button1.Enabled = true; });
                     return;
                 }
                 AddLogMessage("Update available. Downloading ...");
